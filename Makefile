@@ -30,7 +30,7 @@ phasma.img:
 	sudo mkdir -p mnt/etc
 	sudo cp kernel/build/phasma.bin mnt/boot/
 	sudo cp rootfs/boot/grub/grub.cfg mnt/boot/grub/
-	sudo cp rootfs/etc/autoexec.cfg mnt/etc/
+	sudo cp rootfs/etc/system.cfg mnt/etc/
 
 	# GRUB install
 	sudo grub-install --target=i386-pc --boot-directory=mnt/boot --recheck $(LOOP)

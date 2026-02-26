@@ -21,7 +21,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” 
 #include <ctype.h>
 #include <drivers/cmos.h>
 #include <drivers/pata_pio.h>
-#include <fs/fat32.h>
+#include <fat32.h>
 #include <utils/kprintf.h>
 #include <utils/kmalloc.h>
 #include <string.h>

@@ -3,7 +3,9 @@
 #include <x86.h>
 #include <utils/kprintf.h>
 
-void timer_handler(registers_t* regs) {}
+void timer_handler(registers_t* regs) {
+	kinfo.ticks++;
+}
 
 void timer_init(uint32_t frequency) {
 	irq_install_handler(0, timer_handler);

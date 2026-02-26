@@ -1,11 +1,11 @@
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef SLEEP_H
+#define SLEEP_H
 
 #include <kernel.h>
 #include <stdint.h>
 
 extern kernel_info_t kinfo;
 
-void timer_init(uint32_t frequency);
+void sleep(uint32_t seconds);
 
 #endif

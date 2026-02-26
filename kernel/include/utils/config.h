@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <fs/fat32.h>
+#include <fat32.h>
 #include <stddef.h>
 #include <stdbool.h>
 

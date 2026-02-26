@@ -12,6 +12,13 @@ bool config_get_str(fat32_file_t* file, const char* key, char* out, size_t size)
 
         if (current_key && value && strcmp(current_key, key) == 0) {
             strncpy(out, value, size - 1);
+
+            char* new_line_char = strchr(out, '\n');
+            
+            if (new_line_char) {
+                *new_line_char = '\0';
+            }
+
             out[size - 1] = '\0';
             return true;
         }

@@ -1,3 +1,4 @@
+#include <kernel.h>
 #include <cpu/gdt.h>
 #include <cpu/idt.h>
 #include <cpu/pic.h>
@@ -5,11 +6,14 @@
 #include <drivers/tty.h>
 #include <drivers/keyboard.h>
 #include <drivers/timer.h>
-#include <fs/fat32.h>
+#include <fat32.h>
 #include <x86.h>
 #include <utils/kprintf.h>
 #include <utils/kmalloc.h>
 #include <utils/config.h>
+#include <sleep.h>
+
+kernel_info_t kinfo = {0};
 
 void kmain(uint32_t magic) {
 	tty_init();
@@ -28,25 +32,29 @@ void kmain(uint32_t magic) {
     }
 
     keyboard_init();
-    timer_init(20);
+    timer_init(TIMER_FREQUENCY);
 
     sti();
 
     fat32_file_t file;
-    uint8_t buffer[512];
     int bytes_read = 0;
 
-    if (!fat32_open_file(&fat32_ctx, &file, "/etc/autoexec.cfg")) {
-        kpanic("error: Cannot open autoexec.cfg");
+    if (!fat32_open_file(&fat32_ctx, &file, "/etc/system.cfg")) {
+        kpanic("error: Cannot open system.cfg");
     }
 
-    if (!config_get_str(&file, "autoexec", buffer, sizeof(buffer))) {
-        kpanic("error: Key 'autoexec' not found");
+    if (!config_get_str(&file, "AUTOEXEC", kinfo.autoexec, sizeof(kinfo.autoexec))) {
+        kpanic("error: Key 'AUTOEXEC' not found");
     }
-
-    kprintf("%s\n", buffer);
     
     fat32_close(&file);
+
+    kprintf("info: kernel init finish\n");
+
+    kprintf("\nPress any key...");
+    keyboard_getchar();
+
+    tty_clear();
 
 pause:
     for (;;);

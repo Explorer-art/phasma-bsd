@@ -51,6 +51,7 @@ void keyboard_handler(registers_t* regs) {
 
 uint8_t keyboard_getchar(void) {
     sti();
+    tty_cursor_enable(10, 12);
     while (read_index == write_index) {
         // Wait key pressed...
     }
@@ -59,6 +60,7 @@ uint8_t keyboard_getchar(void) {
     read_index = (read_index + 1) & (KEYBOARD_BUFFER_SIZE - 1);
 
     tty_putchar(c);
+    tty_cursor_disable();
     cli();
 
     return c;

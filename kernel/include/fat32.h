@@ -25,6 +25,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” 
 #include <stddef.h>
 #include <stdint.h>
 
+#define PATH_MAX_SIZE 256
+
 typedef struct {
     uint8_t jmp[3];
     char oem[8];
