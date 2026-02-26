@@ -26,7 +26,8 @@ $(BUILD_DIR)/utils/kpanic.o \
 $(BUILD_DIR)/utils/config.o \
 $(BUILD_DIR)/fat32.o \
 $(BUILD_DIR)/sleep.o \
-$(BUILD_DIR)/kernel.o \
+$(BUILD_DIR)/exec.o \
+$(BUILD_DIR)/kmain.o \
 
 LIBC_OBJECTS = \
 $(LIBC_DIR)/build/ctype.o \

@@ -1,57 +1,141 @@
 #include <cpu/syscall.h>
 #include <drivers/tty.h>
 #include <drivers/keyboard.h>
-#include <utils/kprintf.h>
+#include <fat32.h>
+#include <utils/kmalloc.h>
+#include <kernel.h>
 #include <stddef.h>
 
 /*
-Read syscall
+Syscalls
+
+eax - syscall number
+
 Parameters:
-- ebx: source
-- ecx: destination
+- ebx: 1 argument
+- ecx: 2 argument
+- edx: 3 argument
+- esi: 4 argument
+- edi: 5 argument
 */
 
-uint8_t syscall_read(registers_t* regs) {
-	uint8_t c;
+/*
+Put string syscall
 
-	if (regs->ebx == 0) {
-		c = keyboard_getchar();
-	}
+uint32_t sys_puts(const uint8_t* buffer, uint32_t size);
+*/
 
-	regs->ecx = (uint32_t)c;
+uint32_t sys_puts(registers_t* regs) {
+	const char* buffer = regs->ebx;
+	uint32_t size = regs->ecx;
 
-	return 0;
+	tty_puts(buffer, size);
+	return 1;
 }
 
 /*
-Write syscall
-Parameters:
-- ebx: source
-- ecx: destination
+Get char syscall
+
+uint32_t sys_getchar(void);
 */
 
-uint8_t syscall_write(registers_t* regs) {
-	if (regs->ecx == 1)
-		tty_puts((const char*)regs->ebx);
-	else
-		return 1;
+uint32_t sys_getchar(registers_t* regs) {
+	return (uint32_t)keyboard_getchar();
+}
 
-	return 0;
+/*
+Open file syscall
+
+uint32_t* sys_open(const char* path);
+*/
+
+uint32_t sys_open(registers_t* regs) {
+	const char* path = regs->ebx;
+	fat32_file_t* fp = kmalloc(sizeof(fat32_file_t));
+
+	if (!fat32_open_file(&kinfo.ctx, fp, path)) return 0;
+
+	return fp;
+}
+
+/*
+Read file syscall
+
+uint32_t sys_read(file_t* fp, const char* buffer, uint32_t size);
+*/
+
+uint32_t sys_read(registers_t* regs) {
+	uint32_t bytes_read = 0;
+
+	fat32_file_t* fp = regs->ebx;
+	const char* buffer = regs->ecx;
+	uint32_t size = regs->edx;
+
+	return bytes_read;
+}
+
+/*
+Write file syscall
+
+uint32_t sys_write(file_t* fp, char* buffer, uint32_t size);
+*/
+
+uint32_t sys_write(registers_t* regs) {
+	uint32_t bytes_write = 0;
+
+	fat32_file_t* fp = regs->ebx;
+	char* buffer = regs->ecx;
+	uint32_t size = regs->edx;
+
+	return bytes_write;
+}
+
+/*
+Close file syscall
+
+uint32_t* sys_close(uint32_t* fp);
+*/
+
+uint32_t sys_close(registers_t* regs) {
+	uint32_t* fp = regs->ebx;
+
+	fat32_close((fat32_file_t*)fp);
+	kfree(fp);
+
+	return 1;
+}
+
+/*
+Exec syscall
+
+uint32_t sys_exec(char* path);
+*/
+
+uint32_t sys_exec(registers_t* regs) {
+	char* path = regs->ebx;
+	
+	return exec(path);
 }
 
 /*
 Exit syscall
-Parameters: none
+
+uint32_t sys_exit(uint32_t status);
 */
 
-uint8_t syscall_exit(registers_t* regs) {
-	return 0;
+uint32_t sys_exit(registers_t* regs) {
+	return exit();
 }
 
 static syscall_t syscalls[SYSCALL_COUNT] = {
-	syscall_read,
-	syscall_write,
-	syscall_exit
+	sys_puts,
+	sys_getchar,
+	sys_open,
+	sys_read,
+	sys_write,
+	sys_close,
+	sys_exec,
+	sys_exit
 };
 
 void syscall_handler(registers_t* regs) {

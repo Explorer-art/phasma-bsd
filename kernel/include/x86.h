@@ -4,19 +4,23 @@
 #include <stdint.h>
 
 static inline void cli(void) {
-  asm volatile("cli");
+    asm volatile("cli");
 }
 
 static inline void sti(void) {
-  asm volatile("sti");
+    asm volatile("sti");
 }
 
 static inline void hlt(void) {
-  asm volatile("hlt");
+    asm volatile("hlt");
 }
 
-static inline void lcr3(uintptr_t val) {
-  asm volatile("mov %0,%%cr3" : : "r" (val));
+static inline void lcr3(uintptr_t addr) {
+    asm volatile("mov %0,%%cr3" : : "r" (addr));
+}
+
+static inline void jmp_to(uint32_t addr) {
+    __asm__ volatile ("jmp *%0" : : "r"(addr));
 }
 
 uint8_t inb(uint16_t port);

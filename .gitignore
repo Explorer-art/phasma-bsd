@@ -2,4 +2,5 @@
 mnt/
 *.o
 *.bin
+*.elf
 *.img

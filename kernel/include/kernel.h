@@ -4,11 +4,17 @@
 #include <fat32.h>
 #include <stdint.h>
 
-#define TIMER_FREQUENCY 20
+#define KERNEL_START_ADDR   0x100000
+#define USER_START_ADDR     0x400000
+#define TIMER_FREQUENCY     20
 
 typedef struct {
+    uint8_t initialized;
     uint32_t ticks;
-    char autoexec[PATH_MAX_SIZE];
-} __attribute__((packed)) kernel_info_t;
+    fat32_ctx_t ctx;
+    char autoexec_path[PATH_MAX_SIZE];
+} kernel_info_t;
+
+extern kernel_info_t kinfo;
 
 #endif

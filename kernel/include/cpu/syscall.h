@@ -4,7 +4,7 @@
 #include <cpu/irq.h>
 #include <stdint.h>
 
-#define SYSCALL_COUNT 3
+#define SYSCALL_COUNT 8
 
 typedef uint8_t (*syscall_t)(registers_t*);
 

@@ -6,9 +6,9 @@
 
 static uint8_t caps = 0;
 static uint8_t capslock = 0;
-static uint8_t keyboard_buffer[1024];
 static uint8_t write_index = 0;
 static uint8_t read_index = 0;
+static uint8_t keyboard_buffer[1024];
 
 void keyboard_handler(registers_t* regs) {
 	uint8_t status = inb(0x64);
@@ -51,18 +51,15 @@ void keyboard_handler(registers_t* regs) {
 
 uint8_t keyboard_getchar(void) {
     sti();
-    tty_cursor_enable(10, 12);
     while (read_index == write_index) {
         // Wait key pressed...
     }
 
     uint8_t c = keyboard_buffer[read_index];
     read_index = (read_index + 1) & (KEYBOARD_BUFFER_SIZE - 1);
-
     tty_putchar(c);
-    tty_cursor_disable();
-    cli();
 
+    cli();
     return c;
 }
 

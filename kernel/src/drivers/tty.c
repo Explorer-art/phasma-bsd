@@ -78,6 +78,9 @@ void tty_clear(void) {
 			terminal_buffer[index] = vga_entry(' ', terminal_color);
 		}
 	}
+
+	terminal_row = 0;
+	terminal_column = 0;
 }
 
 void tty_scroll(size_t line) {
@@ -124,8 +127,8 @@ void tty_putchar(char c) {
 	}
 }
 
-void tty_puts(const char* str) {
-	for (size_t i = 0; i < strlen(str); i++) {
+void tty_puts(const char* str, uint32_t size) {
+	for (size_t i = 0; i < size; i++) {
 		tty_putchar(str[i]);
 	}
 }

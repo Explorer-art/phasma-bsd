@@ -172,11 +172,11 @@ void kprintf(const char* fmt, ...) {
 						break;
 					case 's':
 						if (length == PRINTF_LENGTH_LONG || length == PRINTF_LENGTH_LONG_LONG) {
-							tty_puts(*(const char**)argp);
+							tty_puts(*(const char**)argp, strlen(*(const char**)argp));
 							argp++;
 							break;
 						} else {
-							tty_puts(*(const char**)argp);
+							tty_puts(*(const char**)argp, strlen(*(const char**)argp));
 							argp++;
 							break;
 						}
