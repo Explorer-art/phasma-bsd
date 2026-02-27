@@ -1,9 +1,10 @@
+#include <syscall.h>
 #include <stdio.h>
 
 int main() {
-    char* msg = "Hello world!\n";
-    put(msg, 13);
-    getchar();
-    
+    puts("Hello world!\n");
+
+    sys_getchar();
+    puts("\n");
     return 0;
 }

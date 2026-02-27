@@ -3,7 +3,8 @@
 
 #include <stdint.h>
 
-void put(const char* buffer, uint32_t size);
-uint8_t getchar(void);
+typedef uint32_t file_t;
+
+void puts(const char* str);
 
 #endif

@@ -2,7 +2,7 @@ LIBC_DIR ?= ../../libc
 ASM = nasm
 CC = gcc
 LD = ld
-CFLAGS = -m32 -ffreestanding -fno-stack-protector -fno-builtin -Wall -Wextra -I $(LIBC_DIR)/include
+CFLAGS = -m32 -ffreestanding -fno-pic -fno-pie -fno-stack-protector -fno-builtin -Wall -Wextra -I $(LIBC_DIR)/include
 
 OBJECTS = \
 entry.o \
@@ -12,6 +12,7 @@ LIBC_OBJECTS = \
 $(LIBC_DIR)/build/ctype.o \
 $(LIBC_DIR)/build/string.o \
 $(LIBC_DIR)/build/memory.o \
+$(LIBC_DIR)/build/syscall.o \
 $(LIBC_DIR)/build/stdio.o \
 
 PHONY: all clean

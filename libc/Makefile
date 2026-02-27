@@ -9,6 +9,7 @@ OBJECTS = \
 $(BUILD_DIR)/ctype.o \
 $(BUILD_DIR)/string.o \
 $(BUILD_DIR)/memory.o \
+$(BUILD_DIR)/syscall.o \
 $(BUILD_DIR)/stdio.o \
 
 PHONY: all clean always

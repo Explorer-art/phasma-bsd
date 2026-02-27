@@ -35,8 +35,8 @@ uint8_t exec(const char* path) {
             return 0;
         }
 
-        if (elf32_phdr.p_type != PH_LOAD_TYPE)
-            continue;
+        if (elf32_phdr.p_type == PH_LOAD_TYPE)
+            break;
 
         if (elf32_phdr.p_vaddr == USER_START_ADDR)
             break;

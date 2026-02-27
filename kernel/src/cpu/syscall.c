@@ -27,12 +27,12 @@ Put string syscall
 uint32_t sys_puts(const uint8_t* buffer, uint32_t size);
 */
 
-uint32_t sys_puts(registers_t* regs) {
+void sys_puts(registers_t* regs) {
 	const char* buffer = regs->ebx;
 	uint32_t size = regs->ecx;
 
 	tty_puts(buffer, size);
-	return 1;
+	regs->eax = 1;
 }
 
 /*
@@ -41,8 +41,8 @@ Get char syscall
 uint32_t sys_getchar(void);
 */
 
-uint32_t sys_getchar(registers_t* regs) {
-	return (uint32_t)keyboard_getchar();
+void sys_getchar(registers_t* regs) {
+	regs->eax = keyboard_getchar();
 }
 
 /*
@@ -51,45 +51,44 @@ Open file syscall
 uint32_t* sys_open(const char* path);
 */
 
-uint32_t sys_open(registers_t* regs) {
+void sys_open(registers_t* regs) {
 	const char* path = regs->ebx;
 	fat32_file_t* fp = kmalloc(sizeof(fat32_file_t));
 
-	if (!fat32_open_file(&kinfo.ctx, fp, path)) return 0;
+	if (!fat32_open_file(&kinfo.ctx, fp, path)) {
+		regs->eax = 0;
+		return;
+	}
 
-	return fp;
+	regs->eax = fp;
 }
 
 /*
 Read file syscall
 
-uint32_t sys_read(file_t* fp, const char* buffer, uint32_t size);
+uint32_t sys_read(uint32_t* fp, const char* buffer, uint32_t size);
 */
 
-uint32_t sys_read(registers_t* regs) {
-	uint32_t bytes_read = 0;
-
+void sys_read(registers_t* regs) {
 	fat32_file_t* fp = regs->ebx;
 	const char* buffer = regs->ecx;
 	uint32_t size = regs->edx;
 
-	return bytes_read;
+	regs->eax = fat32_read(fp, buffer, size);
 }
 
 /*
 Write file syscall
 
-uint32_t sys_write(file_t* fp, char* buffer, uint32_t size);
+uint32_t sys_write(uint32_t* fp, char* buffer, uint32_t size);
 */
 
-uint32_t sys_write(registers_t* regs) {
-	uint32_t bytes_write = 0;
-
+void sys_write(registers_t* regs) {
 	fat32_file_t* fp = regs->ebx;
 	char* buffer = regs->ecx;
 	uint32_t size = regs->edx;
 
-	return bytes_write;
+	regs->eax = fat32_write(fp, buffer, size);
 }
 
 /*
@@ -98,25 +97,35 @@ Close file syscall
 uint32_t* sys_close(uint32_t* fp);
 */
 
-uint32_t sys_close(registers_t* regs) {
+void sys_close(registers_t* regs) {
 	uint32_t* fp = regs->ebx;
 
 	fat32_close((fat32_file_t*)fp);
 	kfree(fp);
 
-	return 1;
+	regs->eax = 1;
+}
+
+/*
+Ioctl syscall
+
+uint32_t sys_ioctl(const char* id, uint32_t cmd);
+*/
+
+void sys_ioctl(registers_t* regs) {
+	regs->eax = 1;
 }
 
 /*
 Exec syscall
 
-uint32_t sys_exec(char* path);
+uint32_t sys_exec(const char* path);
 */
 
-uint32_t sys_exec(registers_t* regs) {
-	char* path = regs->ebx;
+void sys_exec(registers_t* regs) {
+	const char* path = regs->ebx;
 	
-	return exec(path);
+	regs->eax = exec(path);
 }
 
 /*
@@ -125,8 +134,8 @@ Exit syscall
 uint32_t sys_exit(uint32_t status);
 */
 
-uint32_t sys_exit(registers_t* regs) {
-	return exit();
+void sys_exit(registers_t* regs) {
+	regs->eax = exit();
 }
 
 /*
@@ -135,10 +144,10 @@ Sleep syscall
 uint32_t sys_sleep(uint32_t seconds);
 */
 
-uint32_t sys_sleep(registers_t* regs) {
+void sys_sleep(registers_t* regs) {
 	uint32_t seconds = regs->ebx;
 	sleep(seconds);
-	return 1;
+	regs->eax = 1;
 }
 
 static syscall_t syscalls[SYSCALL_COUNT] = {
@@ -150,7 +159,8 @@ static syscall_t syscalls[SYSCALL_COUNT] = {
 	sys_close,
 	sys_exec,
 	sys_exit,
-	sys_sleep
+	sys_sleep,
+	sys_ioctl
 };
 
 void syscall_handler(registers_t* regs) {
