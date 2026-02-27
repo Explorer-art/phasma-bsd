@@ -3,6 +3,8 @@
 #include <drivers/keyboard.h>
 #include <fat32.h>
 #include <utils/kmalloc.h>
+#include <exec.h>
+#include <sleep.h>
 #include <kernel.h>
 #include <stddef.h>
 
@@ -127,6 +129,18 @@ uint32_t sys_exit(registers_t* regs) {
 	return exit();
 }
 
+/*
+Sleep syscall
+
+uint32_t sys_sleep(uint32_t seconds);
+*/
+
+uint32_t sys_sleep(registers_t* regs) {
+	uint32_t seconds = regs->ebx;
+	sleep(seconds);
+	return 1;
+}
+
 static syscall_t syscalls[SYSCALL_COUNT] = {
 	sys_puts,
 	sys_getchar,
@@ -135,7 +149,8 @@ static syscall_t syscalls[SYSCALL_COUNT] = {
 	sys_write,
 	sys_close,
 	sys_exec,
-	sys_exit
+	sys_exit,
+	sys_sleep
 };
 
 void syscall_handler(registers_t* regs) {

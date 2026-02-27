@@ -2,6 +2,7 @@
 #include <drivers/tty.h>
 #include <drivers/keyboard.h>
 #include <stdbool.h>
+#include <string.h>
 
 static const char hex_chars[] = "0123456789abcdef";
 

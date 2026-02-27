@@ -1,0 +1,38 @@
+#ifndef ELF_H
+#define ELF_H
+
+#include <stdint.h>
+
+#define ELF_NIDENT      16
+#define PH_IGNORE_TYPE  0
+#define PH_LOAD_TYPE    1
+
+typedef struct {
+    unsigned char e_ident[ELF_NIDENT];
+    uint16_t e_type;
+    uint16_t e_machine;
+    uint32_t e_version;
+    uint32_t e_entry;
+    uint32_t e_phoff;
+    uint32_t e_shoff;
+    uint32_t e_flags;
+    uint16_t e_ehsize;
+    uint16_t e_phentsize;
+    uint16_t e_phnum;
+    uint16_t e_shentsize;
+    uint16_t e_shnum;
+    uint16_t e_shstrndx;
+} __attribute__((packed)) elf32_hdr_t;
+
+typedef struct {
+    uint32_t p_type;
+    uint32_t p_offset;
+    uint32_t p_vaddr;
+    uint32_t p_paddr;
+    uint16_t p_filesz;
+    uint32_t p_memsz;
+    uint16_t p_flags;
+    uint16_t p_align;
+} __attribute__((packed)) elf32_phdr_t;
+
+#endif

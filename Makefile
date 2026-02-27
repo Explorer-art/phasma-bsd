@@ -30,7 +30,7 @@ phasma.img:
 	sudo mkdir -p mnt/boot/grub
 	sudo mkdir -p mnt/etc
 	sudo cp kernel/build/phasma.bin mnt/boot/
-	sudo cp userland/shell/shell.bin mnt/
+	sudo cp userland/shell/shell.elf mnt/
 	sudo cp rootfs/boot/grub/grub.cfg mnt/boot/grub/
 	sudo cp rootfs/etc/system.cfg mnt/etc/
 
