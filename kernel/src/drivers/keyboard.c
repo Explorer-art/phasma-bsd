@@ -53,6 +53,7 @@ void keyboard_handler(registers_t* regs) {
             tty_left();
             tty_putchar(' ');
             tty_left();
+            
             index--;
             keyboard_buffer[index] = '\0';
         }
@@ -67,6 +68,7 @@ void keyboard_handler(registers_t* regs) {
 uint32_t keyboard_gets(char* buffer, uint32_t size) {
     sti();
     memset(keyboard_buffer, 0, sizeof(keyboard_buffer));
+    tty_cursor_enable(10, 12);
 
     while (1) {
         if (current_key == KEY_ENTER) break;
@@ -76,6 +78,7 @@ uint32_t keyboard_gets(char* buffer, uint32_t size) {
     index = 0;
     current_key = 0;
 
+    tty_cursor_disable();
     cli();
     return 1;
 }

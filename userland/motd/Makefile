@@ -17,9 +17,9 @@ $(LIBC_DIR)/build/stdlib.o \
 
 PHONY: all clean
 
-all: clean shell.elf
+all: clean motd.elf
 
-shell.elf: $(OBJECTS)
+motd.elf: $(OBJECTS)
 	make -C $(LIBC_DIR)
 
 	$(ASM) -f elf32 ../entry.s -o entry.o

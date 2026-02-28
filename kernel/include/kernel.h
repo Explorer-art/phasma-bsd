@@ -9,9 +9,12 @@
 #define TIMER_FREQUENCY     20
 
 typedef struct {
-    uint8_t initialized;
+    uint8_t base_initialized;
+    uint8_t pre_initialized;
+    uint8_t full_initialized;
     uint32_t ticks;
     fat32_ctx_t ctx;
+    char init_list[PATH_MAX_SIZE];
     char autoexec_path[PATH_MAX_SIZE];
 } kernel_info_t;
 

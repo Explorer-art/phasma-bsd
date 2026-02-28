@@ -71,7 +71,11 @@ void tty_putentryat(unsigned char c, uint8_t color, size_t x, size_t y) {
 	tty_cursor_update(x + 1, y);
 }
 
-void tty_clear(void) {
+void tty_cursor_home(void) {
+	tty_cursor_update(0, 0);
+}
+
+void tty_clear_screen(void) {
 	for (size_t y = 0; y < VGA_HEIGHT; y++) {
 		for (size_t x = 0; x < VGA_WIDTH; x++) {
 			const size_t index = y * VGA_WIDTH + x;
@@ -113,6 +117,16 @@ void tty_new_line() {
 	tty_cursor_update(terminal_column, terminal_row);
 }
 
+void tty_process_escape_sequence(const char* str, uint32_t size) {
+	if (size > 2 && str[0] == 27 && str[1] == '[') {
+		if (str[2] == 'H') {
+			tty_cursor_home();
+		} else if (str[2] == 'J') {
+			tty_clear_screen();
+		}
+	}
+}
+
 void tty_putchar(char c) {
 	unsigned char uc = c;
 
@@ -128,8 +142,21 @@ void tty_putchar(char c) {
 }
 
 void tty_puts(const char* str, uint32_t size) {
-	for (size_t i = 0; i < size; i++) {
-		tty_putchar(str[i]);
+	int i = 0;
+	
+	while (i < size) {
+		if (str[i] == 27) {
+			tty_process_escape_sequence(&str[i], size - i);
+
+			while (i < size && str[i] != 'H' && str[i] != 'J') {
+                i++;
+            }
+
+			i++;
+		} else {
+			tty_putchar(str[i]);
+			i++;
+		}
 	}
 }
 
@@ -139,6 +166,8 @@ void tty_left(void) {
 	if (terminal_column == VGA_WIDTH) {
 		tty_new_line();
 	}
+
+	tty_cursor_update(terminal_column, terminal_row);
 }
 
 void tty_right(void) {
@@ -147,4 +176,6 @@ void tty_right(void) {
 	if (terminal_column == VGA_WIDTH) {
 		tty_new_line();
 	}
+
+	tty_cursor_update(terminal_column, terminal_row);
 }
