@@ -15,5 +15,6 @@ void tty_cursor_update(uint8_t x, uint8_t y);
 void tty_clear(void);
 void tty_putchar(char c);
 void tty_puts(const char* str, uint32_t size);
+void tty_left(void);
 
 #endif

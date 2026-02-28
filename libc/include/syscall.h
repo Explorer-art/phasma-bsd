@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-void sys_puts(const char* buffer, uint32_t size);
-uint8_t sys_getchar(void);
+int sys_puts(const char* buffer, uint32_t size);
+int sys_gets(char* buffer, uint32_t size);
 uint32_t* sys_open(const char* path);
 uint32_t sys_read(uint32_t* fp, const char* buffer, uint32_t size);
 uint32_t sys_write(uint32_t* fp, char* buffer, uint32_t size);

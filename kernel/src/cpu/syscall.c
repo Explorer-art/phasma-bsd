@@ -22,7 +22,7 @@ Parameters:
 */
 
 /*
-Put string syscall
+Puts string syscall
 
 uint32_t sys_puts(const uint8_t* buffer, uint32_t size);
 */
@@ -36,13 +36,17 @@ void sys_puts(registers_t* regs) {
 }
 
 /*
-Get char syscall
+Gets syscall
 
-uint32_t sys_getchar(void);
+uint32_t sys_gets(char* buffer, uint32_t size);
 */
 
-void sys_getchar(registers_t* regs) {
-	regs->eax = keyboard_getchar();
+void sys_gets(registers_t* regs) {
+	char* buffer = regs->ebx;
+	uint32_t size = regs->ecx;
+
+	keyboard_gets(buffer, size);
+	regs->eax = 1;
 }
 
 /*
@@ -107,16 +111,6 @@ void sys_close(registers_t* regs) {
 }
 
 /*
-Ioctl syscall
-
-uint32_t sys_ioctl(const char* id, uint32_t cmd);
-*/
-
-void sys_ioctl(registers_t* regs) {
-	regs->eax = 1;
-}
-
-/*
 Exec syscall
 
 uint32_t sys_exec(const char* path);
@@ -150,9 +144,19 @@ void sys_sleep(registers_t* regs) {
 	regs->eax = 1;
 }
 
+/*
+Ioctl syscall
+
+uint32_t sys_ioctl(const char* id, uint32_t cmd);
+*/
+
+void sys_ioctl(registers_t* regs) {
+	regs->eax = 1;
+}
+
 static syscall_t syscalls[SYSCALL_COUNT] = {
 	sys_puts,
-	sys_getchar,
+	sys_gets,
 	sys_open,
 	sys_read,
 	sys_write,

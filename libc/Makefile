@@ -11,6 +11,7 @@ $(BUILD_DIR)/string.o \
 $(BUILD_DIR)/memory.o \
 $(BUILD_DIR)/syscall.o \
 $(BUILD_DIR)/stdio.o \
+$(BUILD_DIR)/stdlib.o \
 
 PHONY: all clean always
 

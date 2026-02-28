@@ -14,6 +14,7 @@ $(LIBC_DIR)/build/string.o \
 $(LIBC_DIR)/build/memory.o \
 $(LIBC_DIR)/build/syscall.o \
 $(LIBC_DIR)/build/stdio.o \
+$(LIBC_DIR)/build/stdlib.o \
 
 PHONY: all clean
 

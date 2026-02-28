@@ -17,13 +17,15 @@ sys_puts:
     ret
 
 
-global sys_getchar
+global sys_gets
 
-sys_getchar:
+sys_gets:
     push ebp
     mov ebp, esp
 
     mov eax, 1
+    mov ebx, [ebp + 8]
+    mov ecx, [ebp + 12]
     int 0x80
 
     mov esp, ebp

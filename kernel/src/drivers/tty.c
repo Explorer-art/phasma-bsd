@@ -7,8 +7,8 @@
 
 static uint16_t* const VGA_MEMORY = (uint16_t* const) 0xB8000;
 
-static size_t terminal_row;
-static size_t terminal_column;
+static int terminal_row;
+static int terminal_column;
 static uint8_t terminal_color;
 static uint16_t* terminal_buffer;
 
@@ -130,5 +130,21 @@ void tty_putchar(char c) {
 void tty_puts(const char* str, uint32_t size) {
 	for (size_t i = 0; i < size; i++) {
 		tty_putchar(str[i]);
+	}
+}
+
+void tty_left(void) {
+	terminal_column--;
+
+	if (terminal_column == VGA_WIDTH) {
+		tty_new_line();
+	}
+}
+
+void tty_right(void) {
+	terminal_column++;
+
+	if (terminal_column == VGA_WIDTH) {
+		tty_new_line();
 	}
 }

@@ -3,12 +3,13 @@
 #include <x86.h>
 #include <drivers/tty.h>
 #include <utils/kprintf.h>
+#include <memory.h>
 
 static uint8_t caps = 0;
 static uint8_t capslock = 0;
-static uint8_t write_index = 0;
-static uint8_t read_index = 0;
-static uint8_t keyboard_buffer[1024];
+static uint32_t index = 0;
+static uint8_t current_key;
+static uint8_t keyboard_buffer[KEYBOARD_BUFFER_SIZE];
 
 void keyboard_handler(registers_t* regs) {
 	uint8_t status = inb(0x64);
@@ -38,6 +39,8 @@ void keyboard_handler(registers_t* regs) {
     if (release)
         return;
 
+    current_key = key;
+    
     char c;
 
     if ((caps ^ capslock) != 0)
@@ -45,22 +48,36 @@ void keyboard_handler(registers_t* regs) {
     else
         c = keyboard_lowercase[key];
 
-    keyboard_buffer[write_index] = c;
-    write_index = (write_index + 1) & (KEYBOARD_BUFFER_SIZE - 1);
-}
-
-uint8_t keyboard_getchar(void) {
-    sti();
-    while (read_index == write_index) {
-        // Wait key pressed...
+    if (key == KEY_BACKSPACE) {
+        if (index > 0) {
+            tty_left();
+            tty_putchar(' ');
+            tty_left();
+            index--;
+            keyboard_buffer[index] = '\0';
+        }
+        return;
     }
 
-    uint8_t c = keyboard_buffer[read_index];
-    read_index = (read_index + 1) & (KEYBOARD_BUFFER_SIZE - 1);
     tty_putchar(c);
+    keyboard_buffer[index] = c;
+    index++;
+}
+
+uint32_t keyboard_gets(char* buffer, uint32_t size) {
+    sti();
+    memset(keyboard_buffer, 0, sizeof(keyboard_buffer));
+
+    while (1) {
+        if (current_key == KEY_ENTER) break;
+    }
+
+    memcpy(buffer, keyboard_buffer, size);
+    index = 0;
+    current_key = 0;
 
     cli();
-    return c;
+    return 1;
 }
 
 void keyboard_init(void) {

@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define KEYBOARD_BUFFER_SIZE	1024
+#define KEYBOARD_BUFFER_SIZE	256
 
 #define KEY_ESC					1
 #define KEY_LSHIFT				42
@@ -109,6 +109,6 @@ static const uint8_t keyboard_uppercase[128] = {
 };
 
 void keyboard_init(void);
-uint8_t keyboard_getchar(void);
+uint32_t keyboard_gets(char* buffer, uint32_t size);
 
 #endif

@@ -1,5 +1,5 @@
-# PhasmaBSD
-PhasmaBSD - simple operating system for x86
+# Phasma BSD
+Phasma BSD - simple operating system for x86
 
 ### Install tools
 For build:
