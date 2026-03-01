@@ -22,8 +22,6 @@ all: clean motd.elf
 motd.elf: $(OBJECTS)
 	make -C $(LIBC_DIR)
 
-	$(ASM) -f elf32 ../entry.s -o entry.o
-
 	$(LD) -m elf_i386 -T ../linker.ld -o $@ $(OBJECTS) $(LIBC_OBJECTS)
 
 %.o: %.c

@@ -20,3 +20,11 @@ char* gets(char* str, unsigned int size) {
     sys_gets(str, size);
     return str;
 }
+
+file_t* fopen(const char* path) {
+    return sys_open(path);
+}
+
+void fclose(file_t* fp) {
+    sys_close(fp);
+}
