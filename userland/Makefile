@@ -1,11 +1,15 @@
-LIBC_DIR ?= ../../libc
 ASM = nasm
 CC = gcc
 LD = ld
 CFLAGS = -m32 -ffreestanding -fno-pic -fno-pie -fno-stack-protector -fno-builtin -Wall -Wextra -I $(LIBC_DIR)/include
+SRC_DIR ?= src
+BUILD_DIR ?= build
+LIBC_DIR ?= ../libc
 
-OBJECTS = \
-main.o \
+ELF_FILES = \
+$(BUILD_DIR)/motd.elf \
+$(BUILD_DIR)/shell.elf \
+$(BUILD_DIR)/test1.elf \
 
 LIBC_OBJECTS = \
 $(LIBC_DIR)/build/ctype.o \
@@ -15,19 +19,21 @@ $(LIBC_DIR)/build/syscall.o \
 $(LIBC_DIR)/build/stdio.o \
 $(LIBC_DIR)/build/stdlib.o \
 
-PHONY: all clean
+PHONY: all clean always
 
-all: clean motd.elf
+all: clean always libc $(ELF_FILES)
 
-motd.elf: $(OBJECTS)
+libc:
 	make -C $(LIBC_DIR)
 
-	$(LD) -m elf_i386 -T ../linker.ld -o $@ $(OBJECTS) $(LIBC_OBJECTS)
+$(BUILD_DIR)/%.elf: $(BUILD_DIR)/%.o
+	$(LD) -m elf_i386 -T linker.ld -o $@ $< $(LIBC_OBJECTS)
 
-%.o: %.c
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+always:
+	mkdir -p $(BUILD_DIR)
+
 clean:
-	rm -f *.o
-	rm -f *.bin
-	rm -f *.elf
+	rm -f -r $(BUILD_DIR)
