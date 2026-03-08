@@ -17,14 +17,14 @@
 #define PRINTF_LENGTH_LONG 3
 #define PRINTF_LENGTH_LONG_LONG 4
 
-typedef uint32_t file_t;
+typedef uint32_t FILE;
 
 int putchar(int c);
 int puts(const char* str);
 void printf(const char* fmt, ...);
 int getchar(void);
 char* gets(char* str, unsigned int size);
-file_t* fopen(const char* path);
-void fclose(file_t* fp);
+FILE* fopen(const char* path);
+void fclose(FILE* fp);
 
 #endif

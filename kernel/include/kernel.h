@@ -17,6 +17,7 @@ typedef struct {
     fat32_ctx_t ctx;
     char init_list[PATH_MAX_SIZE];
     char autoexec_path[PATH_MAX_SIZE];
+    char current_dir[PATH_MAX_SIZE];
 } kernel_info_t;
 
 extern kernel_info_t kinfo;

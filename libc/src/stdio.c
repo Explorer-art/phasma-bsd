@@ -239,10 +239,10 @@ char* gets(char* str, unsigned int size) {
     return str;
 }
 
-file_t* fopen(const char* path) {
+FILE* fopen(const char* path) {
     return sys_open(path);
 }
 
-void fclose(file_t* fp) {
+void fclose(FILE* fp) {
     sys_close(fp);
 }
