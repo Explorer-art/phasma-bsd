@@ -6,6 +6,7 @@
 
 #define KERNEL_START_ADDR   0x100000
 #define USER_START_ADDR     0x400000
+#define STACK_POINT         0x200000
 #define TIMER_FREQUENCY     20
 
 typedef struct {

@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-void exec(const char* path);
+void exec(const char* path, const char** argv);
 void exit(uint32_t status);
 
 #endif

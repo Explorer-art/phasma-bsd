@@ -3,9 +3,9 @@
 
 #include <stdint.h>
 
-typedef void (*entry_point_t)(void);
+typedef void (*entry_point_t)(int argc, char** argv);
 
-uint8_t exec(const char* path);
+uint8_t exec(const char* path, const char** argv);
 uint8_t exit(void);
 
 #endif

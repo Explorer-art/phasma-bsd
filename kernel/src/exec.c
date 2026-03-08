@@ -12,7 +12,7 @@ uint8_t is_elf(uint8_t* ident) {
     return !memcmp(ident, magic, sizeof(magic));
 }
 
-uint8_t exec(const char* path) {
+uint8_t exec(const char* path, const char** argv) {
     fat32_file_t file;
     if (!fat32_open_file(&kinfo.ctx, &file, path)) return 0;
 
@@ -51,13 +51,42 @@ uint8_t exec(const char* path) {
     
     fat32_close(&file);
 
-    entry_point_t entry = (entry_point_t)USER_START_ADDR;
-    entry();
+    int argc = 0;
+    char** argv_tmp = argv;
+
+    while (*argv_tmp != NULL) {
+        argc++;
+        argv_tmp++;
+    }
+
+    uint32_t esp = STACK_POINT;
+    uint32_t* addrs = kmalloc(argc * sizeof(uint32_t));
+
+    for (int i = 0; *argv != NULL; i++, argv++) {
+        uint32_t length = strlen(*argv);
+        esp -= length + 1;
+        addrs[i] = esp;
+        strcpy((char*)esp, *argv);
+    }
+
+    esp -= sizeof(uint32_t);
+    *(uint32_t*)esp = 0;
+
+    for (int i = argc - 1; i >= 0; i--) {
+        esp -= sizeof(uint32_t);
+        *(uint32_t*)esp = addrs[i];
+    }
+
+    kfree(addrs);
+
+    uint32_t argv_ptr = esp;
+
+    jmp_to_entry(USER_START_ADDR, esp, argc, argv_ptr);
 
     return 1;
 }
 
 uint8_t exit(void) {
-    jmp_to(KERNEL_START_ADDR);
+    switch_stack_and_jmp_to(KERNEL_START_ADDR, STACK_POINT);
     return 1;
 }

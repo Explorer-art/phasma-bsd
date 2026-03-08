@@ -105,6 +105,7 @@ sys_exec:
 
     mov eax, 6
     mov ebx, [ebp + 8]
+    mov ecx, [ebp + 12]
     int 0x80
 
     mov esp, ebp

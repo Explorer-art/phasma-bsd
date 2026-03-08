@@ -9,6 +9,7 @@ LIBC_DIR ?= ../libc
 ELF_FILES = \
 $(BUILD_DIR)/motd.elf \
 $(BUILD_DIR)/shell.elf \
+$(BUILD_DIR)/echo.elf \
 $(BUILD_DIR)/test1.elf \
 
 LIBC_OBJECTS = \

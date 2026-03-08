@@ -113,13 +113,14 @@ void sys_close(registers_t* regs) {
 /*
 Exec syscall
 
-uint32_t sys_exec(const char* path);
+uint32_t sys_exec(const char* path, const char** argv);
 */
 
 void sys_exec(registers_t* regs) {
 	const char* path = regs->ebx;
+	const char** argv = regs->ecx;
 	
-	regs->eax = exec(path);
+	regs->eax = exec(path, argv);
 }
 
 /*

@@ -325,11 +325,14 @@ bool fat32_find_file(fat32_ctx_t *ctx, const uint32_t start_cluster, const char 
 
 bool fat32_open_file(fat32_ctx_t *ctx, fat32_file_t *file, const char *path) {
     memset(file, 0, sizeof(fat32_file_t));
-    str_to_upper(path);
+
+    char* _path = kmalloc(strlen(path) + 1);
+    strcpy(_path, path);
+    str_to_upper(_path);
 
     file->ctx = ctx;
 
-    if (strcmp(path, "/") == 0) {
+    if (strcmp(_path, "/") == 0) {
         file->start_cluster = ctx->root_cluster;
         file->current_cluster = ctx->root_cluster;
         file->is_dir = true;
@@ -338,7 +341,7 @@ bool fat32_open_file(fat32_ctx_t *ctx, fat32_file_t *file, const char *path) {
 
     uint32_t current_cluster = ctx->root_cluster;
     char component[13];
-    const char *p = path;
+    const char *p = _path;
     fat32_dir_entry_t entry;
 
     while (*p) {
@@ -371,6 +374,7 @@ bool fat32_open_file(fat32_ctx_t *ctx, fat32_file_t *file, const char *path) {
     file->start_cluster = current_cluster;
     file->current_cluster = current_cluster;
     file->is_dir = true;
+    kfree(_path);
     return true;
 }
 
@@ -544,8 +548,10 @@ bool fat32_close(fat32_file_t *file) {
 bool fat32_mkdir(fat32_ctx_t *ctx, const char *path) {
     char parent[256], dirname[13];
 
-    str_to_upper(path);
-    split_path(path, parent, dirname);
+    char* _path = kmalloc(strlen(path) + 1);
+    strcpy(_path, path);
+    str_to_upper(_path);
+    split_path(_path, parent, dirname);
 
     fat32_file_t parent_dir;
     if (!fat32_open_file(ctx, &parent_dir, parent) || !parent_dir.is_dir)
@@ -595,16 +601,19 @@ bool fat32_mkdir(fat32_ctx_t *ctx, const char *path) {
 bool fat32_create(fat32_ctx_t *ctx, const char *path) {
     char parent[256], filename[13];
 
-    str_to_upper(path);
-    split_path(path, parent, filename);
+    char* _path = kmalloc(strlen(path) + 1);
+    strcpy(_path, path);
+    str_to_upper(_path);
+    split_path(_path, parent, filename);
 
     fat32_file_t parent_dir;
     if (!fat32_open_file(ctx, &parent_dir, parent) || !parent_dir.is_dir)
         return false;
 
     const bool success = create_direntry(ctx, parent_dir.current_cluster, filename, ATTR_ARCHIVE, 0, 0);
-
+    
     fat32_close(&parent_dir);
+    kfree(_path);
     return success;
 }
 
@@ -688,8 +697,10 @@ bool fat32_rewrite(fat32_file_t *file, const void *buffer, const size_t size) {
 bool fat32_remove(fat32_ctx_t *ctx, const char *path) {
     char parent[256], name[13];
 
-    str_to_upper(path);
-    split_path(path, parent, name);
+    char* _path = kmalloc(strlen(path) + 1);
+    strcpy(_path, path);
+    str_to_upper(_path);
+    split_path(_path, parent, name);
 
     fat32_file_t parent_dir;
     fat32_dir_entry_t entry;
@@ -719,15 +730,18 @@ bool fat32_remove(fat32_ctx_t *ctx, const char *path) {
     }
 
     kfree(cluster_data);
+    kfree(_path);
     return false;
 }
 
 bool fat32_rmdir(fat32_ctx_t *ctx, const char *path) {
     fat32_file_t dir;
 
-    str_to_upper(path);
+    char* _path = kmalloc(strlen(path) + 1);
+    strcpy(_path, path);
+    str_to_upper(_path);
 
-    if (!fat32_open_file(ctx, &dir, path) || !dir.is_dir)
+    if (!fat32_open_file(ctx, &dir, _path) || !dir.is_dir)
         return false;
 
     fat32_dir_entry_t entry;
@@ -736,14 +750,18 @@ bool fat32_rmdir(fat32_ctx_t *ctx, const char *path) {
             return false;
     }
 
+    kfree(_path);
+
     return fat32_remove(ctx, path);
 }
 
 bool fat32_update_file_entry(fat32_ctx_t *ctx, const char *path, const uint32_t start_cluster, const uint32_t size) {
     char parent[256], name[13];
 
-    str_to_upper(path);
-    split_path(path, parent, name);
+    char* _path = kmalloc(strlen(path) + 1);
+    strcpy(_path, path);
+    str_to_upper(_path);
+    split_path(_path, parent, name);
 
     fat32_file_t parent_dir;
     if (!fat32_open_file(ctx, &parent_dir, parent) || !parent_dir.is_dir)
@@ -808,5 +826,6 @@ bool fat32_update_file_entry(fat32_ctx_t *ctx, const char *path, const uint32_t 
 
     kfree(cluster_data);
     fat32_close(&parent_dir);
+    kfree(_path);
     return success;
 }

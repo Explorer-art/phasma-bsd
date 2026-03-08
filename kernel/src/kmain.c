@@ -12,6 +12,7 @@
 #include <utils/kmalloc.h>
 #include <utils/config.h>
 #include <exec.h>
+#include <string.h>
 
 kernel_info_t kinfo = {0};
 
@@ -56,7 +57,8 @@ pre_init:
     kinfo.full_initialized = 1;
 
 autoexec:
-    if (!exec(kinfo.autoexec_path)) {
+    char* argv[] = { kinfo.autoexec_path, NULL };
+    if (!exec(kinfo.autoexec_path, argv)) {
         kpanic("error: load autoexec program failed");
     }
 
@@ -74,9 +76,15 @@ void init_list(void) {
 
     char* path = strtok(buffer, ",");
 
-    while (path) {
-        exec(path);
-        kinfo.pre_initialized--;
+    for (int i = 0; path; i++) {
+        if (i + 1 == kinfo.pre_initialized) {
+            char* argv[] = { path, NULL };
+            
+            kinfo.pre_initialized--;
+            exec(path, argv);
+            return;
+        }
+
         path = strtok(NULL, ",");
     }
 }

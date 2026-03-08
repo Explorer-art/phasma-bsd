@@ -34,6 +34,7 @@ $(BUILD_DIR)/phasma.img:
 	sudo cp $(KERNEL_DIR)/build/phasma.bin mnt/boot/
 	sudo cp $(USERLAND_DIR)/build/shell.elf mnt/
 	sudo cp $(USERLAND_DIR)/build/motd.elf mnt/
+	sudo cp $(USERLAND_DIR)/build/echo.elf mnt/
 	sudo cp $(USERLAND_DIR)/build/test1.elf mnt/
 	
 	sudo cp rootfs/boot/grub/grub.cfg mnt/boot/grub/

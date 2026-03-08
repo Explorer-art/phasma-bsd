@@ -1,5 +1,7 @@
 bits 32
 
+%define STACK_POINT 0x200000
+
 section .text
 	; multiboot spec
 	align 4
@@ -12,12 +14,10 @@ extern kmain
 
 start:
 	cli
-	mov esp, stack_space
+	mov esp, STACK_POINT
 	push ebx
 	push eax
 	call kmain
 	hlt
 
 section .bss
-resb 8092
-stack_space:
