@@ -38,6 +38,7 @@ $(BUILD_DIR)/phasma.img:
 	sudo cp $(USERLAND_DIR)/build/echo.elf mnt/bin/
 	sudo cp $(USERLAND_DIR)/build/clear.elf mnt/bin/
 	sudo cp $(USERLAND_DIR)/build/ls.elf mnt/bin/
+	sudo cp $(USERLAND_DIR)/build/cat.elf mnt/bin/
 	
 	sudo cp rootfs/boot/grub/grub.cfg mnt/boot/grub/
 	sudo cp rootfs/etc/system.cfg mnt/etc/

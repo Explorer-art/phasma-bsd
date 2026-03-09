@@ -22,7 +22,7 @@ void load_autoexec(void);
 
 void kmain(uint32_t magic) {
     sti();
-    
+
     if (kinfo.full_initialized)
         goto autoexec;
     
@@ -49,6 +49,10 @@ void kmain(uint32_t magic) {
 
     load_init_list();
     load_autoexec();
+
+    if (kinfo.start_delay) {
+        sleep(kinfo.start_delay);
+    }
 
     kinfo.base_initialized = 1;
 
@@ -128,6 +132,12 @@ void load_autoexec(void) {
     }
 
     if (!config_get_str(&fp, "AUTOEXEC", kinfo.autoexec_path, sizeof(kinfo.autoexec_path))) {
+        kpanic("error: Key 'AUTOEXEC' not found");
+    }
+
+    int start_delay;
+
+    if (!config_get_int(&fp, "START_DELAY", &kinfo.start_delay)) {
         kpanic("error: Key 'AUTOEXEC' not found");
     }
 

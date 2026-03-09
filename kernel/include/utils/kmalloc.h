@@ -14,4 +14,4 @@ typedef struct {
 void kmalloc_init(void);
 void* kmalloc(uint32_t size);
 void* kcalloc(size_t number, size_t size);
-void kfree(uint8_t* ptr);
+void kfree(void* ptr);

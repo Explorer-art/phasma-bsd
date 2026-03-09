@@ -61,6 +61,7 @@ void sys_open(registers_t* regs) {
 	fat32_file_t* fp = (fat32_file_t*)kmalloc(sizeof(fat32_file_t));
 
 	if (!fat32_open_file(&kinfo.ctx, fp, path)) {
+		kfree((void*)fp);
 		regs->eax = 0;
 		return;
 	}
@@ -78,7 +79,7 @@ void sys_close(registers_t* regs) {
 	uint32_t* fp = regs->ebx;
 
 	fat32_close((fat32_file_t*)fp);
-	kfree(fp);
+	kfree((void*)fp);
 
 	regs->eax = 1;
 }

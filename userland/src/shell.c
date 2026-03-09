@@ -66,11 +66,11 @@ void exec_cmd(char* buffer) {
     }
 
     if (!status) {
-        puts("error: Unknown file!");
+        puts("error: Unknown file");
         return;
     }
 
-    exec(path, argv);
+    exec(path, (const char**)argv);
 }
 
 bool check_file(const char* buffer, char* path, const char* dir) {

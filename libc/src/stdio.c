@@ -6,7 +6,7 @@
 static const char hex_chars[] = "0123456789abcdef";
 
 int putchar(int c) {
-    return sys_puts(&c, sizeof(char));
+    return sys_puts((const char*)&c, sizeof(char));
 }
 
 int puts(const char* str) {
@@ -244,22 +244,22 @@ FILE* fopen(const char* path) {
 }
 
 void fclose(FILE* fp) {
-    sys_close(fp);
+    sys_close((fat32_file_t*)fp);
 }
 
 size_t fread(void* buffer, size_t size, size_t n, FILE* fp) {
-	if (size != 1) return;
+	if (size != 1) return 0;
 
-	return sys_read(fp, buffer, n);
+	return (size_t)sys_read((fat32_file_t*)fp, buffer, n);
 }
 
 size_t fwrite(const void* buffer, size_t size, size_t n, FILE* fp) {
-	if (size != 1) return;
+	if (size != 1) return 0;
 
-	return sys_write(fp, buffer, n);
+	return (size_t)sys_write((fat32_file_t*)fp, buffer, n);
 }
 
 int fseek(FILE* fp, uint32_t offset, int mode) {
-	if (mode != 0) return;
-	return sys_seek(fp, offset);
+	if (mode != 0) return 0;
+	return (int)sys_seek((fat32_file_t*)fp, offset);
 }

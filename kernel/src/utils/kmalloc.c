@@ -80,7 +80,7 @@ void* kcalloc(size_t number, size_t size) {
     return ptr;
 }
 
-void kfree(uint8_t* ptr) {
+void kfree(void* ptr) {
     if (!ptr || ptr < KMALLOC_START_ADDR || ptr > KMALLOC_END_ADDR) return;
 
     kmalloc_block_info_t* info = (kmalloc_block_info_t*)(ptr - sizeof(kmalloc_block_info_t));
