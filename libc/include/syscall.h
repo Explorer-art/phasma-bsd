@@ -68,7 +68,7 @@ uint32_t sys_rm(const char* path);
 uint32_t sys_mkdir(const char* path);
 uint32_t sys_rmdir(const char* path);
 uint32_t sys_getcd(char* buffer);
-uint32_t sys_setcd(const char* new_current_dir);
+uint32_t sys_chdir(const char* dir);
 uint32_t sys_exec(char* path, const char** argv);
 uint32_t sys_exit(uint32_t status);
 uint32_t sys_sleep(uint32_t seconds);

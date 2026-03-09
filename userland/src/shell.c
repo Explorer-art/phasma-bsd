@@ -46,21 +46,26 @@ void exec_cmd(char* buffer) {
 
     if (!strcmp(argv[0], "cd")) {
         if (!argv[1])
-            sys_setcd("/");
+            sys_chdir("/");
         else
-            change_directory(argv[1]);
+            sys_chdir(argv[1]);
 
         return;
     }
 
     char path[PATH_MAX_SIZE];
+    bool status;
 
-    /*
-    TODO:
-    Implement support for absolute and relative paths.
-    */
+    if (argv[0][0] == '/') {
+        status = check_file(argv[0], path, "/");
+    } else {
+        status = check_file(argv[0], path, current_dir);
 
-    if (!check_file(argv[0], path, "/bin/") && !check_file(argv[0], path, "/")) {
+        if (!status)
+            status = check_file(argv[0], path, "/bin/");
+    }
+
+    if (!status) {
         puts("error: Unknown file!");
         return;
     }
@@ -95,36 +100,4 @@ bool check_file(const char* buffer, char* path, const char* dir) {
     }
 
     return false;
-}
-
-void change_directory(const char* new_dir) {
-    if (!strcmp(new_dir, "..")) {
-        char* str = strrchr(current_dir, '/');
-        *str = '\0';
-        
-        if (current_dir[0] != '/') {
-            current_dir[0] = '/';
-            current_dir[1] = '\0';
-        }
-
-        sys_setcd(current_dir);
-        return;
-    }
-
-    int curr_dir_len = strlen(current_dir);
-    int new_dir_len = strlen(new_dir);
-    int offset = curr_dir_len;
-
-    if (curr_dir_len + new_dir_len + 2 >= PATH_MAX_SIZE) {
-        printf("error: Path too long\n");
-        return;
-    }
-
-    if (current_dir[curr_dir_len - 1] != '/') {
-        current_dir[curr_dir_len] = '/';
-        offset++;
-    }
-
-    strcpy((current_dir + offset), new_dir);
-    sys_setcd(current_dir);
 }

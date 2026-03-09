@@ -214,19 +214,62 @@ uint32_t sys_getcd(char* buffer);
 
 void sys_getcd(registers_t* regs) {
 	char* buffer = regs->ebx;
-	strcpy(buffer, &kinfo.current_dir);
+	strcpy(buffer, kinfo.current_dir);
 	regs->eax = 1;
 }
 
 /*
 Set current directory
 
-uint32_t sys_setcd(const char* new_current_dir);
+uint32_t sys_chdir(const char* dir);
 */
 
-void sys_setcd(registers_t* regs) {
-	const char* new_current_dir = (char*)regs->ebx;
-	strcpy(&kinfo.current_dir, new_current_dir);
+void sys_chdir(registers_t* regs) {
+	const char* dir = (char*)regs->ebx;
+
+	if (!strcmp(dir, "..")) {
+        char* str = strrchr(kinfo.current_dir, '/');
+        
+        if (str && str != kinfo.current_dir) {
+			*str = '\0';
+			str = strrchr(kinfo.current_dir, '/');
+			if (str) *(str + 1) = '\0';
+        } else {
+			strcpy(kinfo.current_dir, "/");
+		}
+
+		regs->eax = 1;
+        return;
+    }
+
+	if (!strcmp(dir, "/")) {
+		strcpy(kinfo.current_dir, "/");
+		regs->eax = 1;
+        return;
+	}
+
+	int curr_dir_len = strlen(kinfo.current_dir);
+    int dir_len = strlen(dir);
+    int offset = curr_dir_len;
+
+    if (curr_dir_len + dir_len + 3 >= PATH_MAX_SIZE) {
+        regs->eax = 0;
+        return;
+    }
+
+    if (kinfo.current_dir[curr_dir_len - 1] != '/') {
+        kinfo.current_dir[curr_dir_len] = '/';
+        offset++;
+    }
+
+    strcpy((kinfo.current_dir + offset), dir);
+    curr_dir_len = strlen(kinfo.current_dir);
+
+    if (kinfo.current_dir[curr_dir_len - 1] != '/') {
+        kinfo.current_dir[curr_dir_len] = '/';
+        kinfo.current_dir[curr_dir_len + 1] = '\0';
+    }
+
 	regs->eax = 1;
 }
 
@@ -302,7 +345,7 @@ static syscall_t syscalls[SYSCALL_COUNT] = {
 	sys_mkdir,
 	sys_rmdir,
 	sys_getcd,
-	sys_setcd,
+	sys_chdir,
 	sys_exec,
 	sys_exit,
 	sys_sleep,

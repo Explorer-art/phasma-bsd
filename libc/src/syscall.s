@@ -220,9 +220,9 @@ sys_getcd:
     ret
 
 
-global sys_setcd
+global sys_chdir
 
-sys_setcd:
+sys_chdir:
     push ebp
     mov ebp, esp
 
