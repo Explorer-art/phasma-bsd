@@ -212,6 +212,7 @@ sys_getcd:
     mov ebp, esp
 
     mov eax, 13
+    mov ebx, [ebp + 8]
     int 0x80
 
     mov esp, ebp

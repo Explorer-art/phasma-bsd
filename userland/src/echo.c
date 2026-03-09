@@ -7,6 +7,6 @@ int main(int argc, char** argv) {
         if ((i + 1 < argc)) puts(" ");
     }
 
-    puts("\n");
+    puts("\n\n");
     exit(0);
 }

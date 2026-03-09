@@ -246,3 +246,20 @@ FILE* fopen(const char* path) {
 void fclose(FILE* fp) {
     sys_close(fp);
 }
+
+size_t fread(void* buffer, size_t size, size_t n, FILE* fp) {
+	if (size != 1) return;
+
+	return sys_read(fp, buffer, n);
+}
+
+size_t fwrite(const void* buffer, size_t size, size_t n, FILE* fp) {
+	if (size != 1) return;
+
+	return sys_write(fp, buffer, n);
+}
+
+int fseek(FILE* fp, uint32_t offset, int mode) {
+	if (mode != 0) return;
+	return sys_seek(fp, offset);
+}

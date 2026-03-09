@@ -2,6 +2,7 @@
 #define STDIO_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 #define PATH_MAX_SIZE 256
 
@@ -17,7 +18,11 @@
 #define PRINTF_LENGTH_LONG 3
 #define PRINTF_LENGTH_LONG_LONG 4
 
-typedef uint32_t FILE;
+#define SEEK_SET 0
+#define SEEK_CUR 1
+#define SEEK_END 2
+
+#define FILE uint32_t
 
 int putchar(int c);
 int puts(const char* str);
@@ -26,5 +31,8 @@ int getchar(void);
 char* gets(char* str, unsigned int size);
 FILE* fopen(const char* path);
 void fclose(FILE* fp);
+size_t fread(void* buffer, size_t size, size_t n, FILE* fp);
+size_t fwrite(const void* buffer, size_t size, size_t n, FILE* fp);
+int fseek(FILE* fp, uint32_t offset, int mode);
 
 #endif

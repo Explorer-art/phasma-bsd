@@ -10,7 +10,8 @@ ELF_FILES = \
 $(BUILD_DIR)/motd.elf \
 $(BUILD_DIR)/shell.elf \
 $(BUILD_DIR)/echo.elf \
-$(BUILD_DIR)/test1.elf \
+$(BUILD_DIR)/clear.elf \
+$(BUILD_DIR)/ls.elf \
 
 LIBC_OBJECTS = \
 $(LIBC_DIR)/build/ctype.o \

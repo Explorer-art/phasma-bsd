@@ -21,6 +21,8 @@ void load_init_list(void);
 void load_autoexec(void);
 
 void kmain(uint32_t magic) {
+    sti();
+    
     if (kinfo.full_initialized)
         goto autoexec;
     
@@ -40,6 +42,8 @@ void kmain(uint32_t magic) {
         goto pause;
     }
 
+    strcpy(&kinfo.current_dir, "/");
+
     keyboard_init();
     timer_init(TIMER_FREQUENCY);
 
@@ -47,8 +51,6 @@ void kmain(uint32_t magic) {
     load_autoexec();
 
     kinfo.base_initialized = 1;
-
-    sti();
 
     kprintf("info: starting pre init...\n");
 

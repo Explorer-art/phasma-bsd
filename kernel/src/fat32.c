@@ -507,10 +507,8 @@ bool fat32_read_dir(fat32_file_t *dir, fat32_dir_entry_t *entry) {
     uint8_t cluster_data[ctx->cluster_size];
 
     while (1) {
-        if (dir->cluster_offset == 0) {
-            if (!fat32_read_cluster(ctx, dir->current_cluster, cluster_data)) {
-                return false;
-            }
+        if (!fat32_read_cluster(ctx, dir->current_cluster, cluster_data)) {
+            return false;
         }
 
         const fat32_dir_entry_t *de = (fat32_dir_entry_t *) (cluster_data + dir->cluster_offset);

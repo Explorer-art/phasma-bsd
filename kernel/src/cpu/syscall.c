@@ -209,17 +209,19 @@ void sys_read_dir(registers_t* regs) {
 /*
 Get current directory
 
-uint32_t* sys_getcd(void);
+uint32_t sys_getcd(char* buffer);
 */
 
 void sys_getcd(registers_t* regs) {
-	regs->eax = (uint32_t*)&kinfo.current_dir;
+	char* buffer = regs->ebx;
+	strcpy(buffer, &kinfo.current_dir);
+	regs->eax = 1;
 }
 
 /*
 Set current directory
 
-uint32_t sys_setcd(void);
+uint32_t sys_setcd(const char* new_current_dir);
 */
 
 void sys_setcd(registers_t* regs) {

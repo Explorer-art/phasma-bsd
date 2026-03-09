@@ -30,12 +30,14 @@ $(BUILD_DIR)/phasma.img:
 	# Copy files
 	sudo mkdir -p mnt/boot/grub
 	sudo mkdir -p mnt/etc
+	sudo mkdir -p mnt/bin
 
 	sudo cp $(KERNEL_DIR)/build/phasma.bin mnt/boot/
-	sudo cp $(USERLAND_DIR)/build/shell.elf mnt/
-	sudo cp $(USERLAND_DIR)/build/motd.elf mnt/
-	sudo cp $(USERLAND_DIR)/build/echo.elf mnt/
-	sudo cp $(USERLAND_DIR)/build/test1.elf mnt/
+	sudo cp $(USERLAND_DIR)/build/shell.elf mnt/bin/
+	sudo cp $(USERLAND_DIR)/build/motd.elf mnt/bin/
+	sudo cp $(USERLAND_DIR)/build/echo.elf mnt/bin/
+	sudo cp $(USERLAND_DIR)/build/clear.elf mnt/bin/
+	sudo cp $(USERLAND_DIR)/build/ls.elf mnt/bin/
 	
 	sudo cp rootfs/boot/grub/grub.cfg mnt/boot/grub/
 	sudo cp rootfs/etc/system.cfg mnt/etc/
